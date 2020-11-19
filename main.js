@@ -1,48 +1,33 @@
 
-/*
-  Import the built-in path module.
-  See https://nodejs.org/api/path.html
-  The path module provides utilities for working with file and directory paths.
-  IAP requires the path module to access local file modules.
-  The path module exports an object.
-  Assign the imported object to variable path.
-*/
-const path = require('path');
-
-/**
- * Import helper function module located in the same directory
- * as this module. IAP requires the path object's join method
- * to unequivocally locate the file module.
- */
-const { getIpv4MappedIpv6Address } = require(path.join(__dirname, 'ipv6.js'));
-
-
-/*
-  Import the ip-cidr npm package.
-  See https://www.npmjs.com/package/ip-cidr
-  The ip-cidr package exports a class.
-  Assign the class definition to variable IPCIDR.
-*/
 const IPCIDR = require('ip-cidr');
-
+const path = require('path');
+// Need this section as it's going to interpret the ipv6 address
+const { getIpv4MappedIpv6Address } = require(path.join(__dirname, 'ipv6.js'));
 
 class IpAddress {
   constructor() {
-    //log.info('Starting the IpAddress product.');
-    //logger.info('Starting address product');
+    // IAP's global log object is used to output errors, warnings, and other
+    // information to the console, IAP's log files, or a Syslog server.
+    // For more information, consult the Log Class guide on the Itential
+    // Developer Hub https://developer.itential.io/ located
+    // under Documentation -> Developer Guides -> Log Class Guide
+    // Don't understand why i can't get this to work....
+    //log.info('Starting the IpAddress product.');  
   }
-/**
- * Calculate and return the first host IP address from a CIDR subnet.
- * @param {string} cidrStr - The IPv4 subnet expressed
- *                 in CIDR format.
- * @param {callback} callback - A callback function.
- * @return {string} (firstIpAddress) - An IPv4 address.
- */
-getFirstIpAddress(cidrStr, callback) {
+    /**
+    * Calculate and return the first host IP address from a CIDR subnet.
+    * @param {string} cidrStr - The IPv4 subnet expressed
+    *                 in CIDR format.
+    * @param {callback} callback - A callback function.
+    * @return {string} (firstIpAddress) - An IPv4 address.
+    */
+    getFirstIpAddress(cidrStr, callback) {
+
     // Initialize return arguments for callback
+    let ipv6Address = null;
     let firstIpAddress = null;
-    let IPv6Address = Null;
     let callbackError = null;
+
 
     // Instantiate an object from the imported class and assign the instance to variable cidr.
     const cidr = new IPCIDR(cidrStr);
@@ -61,21 +46,19 @@ getFirstIpAddress(cidrStr, callback) {
     } else {
         // If the passed CIDR is valid, call the object's toArray() method.
         // Notice the destructering assignment syntax to get the value of the first array's element.
+        // ip v4
         [firstIpAddress] = cidr.toArray(options);
-        //if it's not an ipv4 address then we gotta do this call the function we made earlier:  getIpv4MappedIpv6Address
-        IPv6Address = getIpv4MappedIpv6Address(firstIpAddress)
+        // ip v6
+        ipv6Address = getIpv4MappedIpv6Address(firstIpAddress)
     }
     // Call the passed callback function.
     // Node.js convention is to pass error data as the first argument to a callback.
     // The IAP convention is to pass returned data as the first argument and error
     // data as the second argument to the callback function.
-    //return callback(firstIpAddress, callbackError);
-    return callback({ipv4: firstIpAddress, ipv6: ipv6Address}, callbackError)
+
+    // not a node expert, but trying to return a json ipv4: $ip & ipv6: $ipv6
+    return callback({ipv4: firstIpAddress, ipv6: ipv6Address}, callbackError);
     }
-
-
-
 }
+
 module.exports = new IpAddress;
-
-
