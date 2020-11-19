@@ -56,7 +56,7 @@ class IpAddress {
     // The IAP convention is to pass returned data as the first argument and error
     // data as the second argument to the callback function.
 
-    // not a node expert, but trying to return a json ipv4: $ip & ipv6: $ipv6
+    // not a node expert, but trying to return a json ipv4: $ip test ip 1.1.1.0/24 retursn 1.1.1.1 & ipv6: $ipv6
     return callback({ipv4: firstIpAddress, ipv6: ipv6Address}, callbackError);
     }
 }
