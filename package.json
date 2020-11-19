@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/lilgreml1n/app-ip_address#readme",
   "dependencies": {
-    "ip-cidr": "^2.1.1"
+    "ip-cidr": "^2.1.1",
+    "logs": "^1.5.10"
   }
 }
